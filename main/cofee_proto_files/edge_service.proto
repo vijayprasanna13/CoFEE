@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+
+message microbatch_payload {
+    repeated bytes payload = 1;
+}
+
+message microbatch_id {
+    int32 mubatchid = 1;
+}
+
+// Task details
+message task_details {
+    string task_id = 1;
+    int32 slack_time = 2;
+}
+
+// Task info
+message task_info {
+    task_details task = 1;
+    microbatch_id input = 2;
+}
+
+message result {
+    int32 status = 1;
+}
+
+
+service edge {
+    rpc pull_microbatch(microbatch_id) returns (microbatch_payload);
+    rpc kill_task(task_details) returns (Empty);
+    rpc send_task(task_info) returns (result);
+}

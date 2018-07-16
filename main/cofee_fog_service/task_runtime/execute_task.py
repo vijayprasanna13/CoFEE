@@ -1,0 +1,3 @@
+'''
+THREAD LOGIC TO EXECUTE A TASK ON fog
+'''

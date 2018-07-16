@@ -1,0 +1,41 @@
+{
+  "deadline": 200,
+  "dag_properties": {
+    "source_task": "A",
+    "sink_task": "E"
+  },
+
+  "taskwiring": {
+  "A" : ["B", "C"],
+  "B" : ["D"] ,
+  "C" : ["D"] ,
+  "D" : ["E"] },
+
+  "task_properties" : {
+    "A" : { "taskID":1,
+        "source_microbatch_id": [1],
+        "sink_microbatch_id": [2,2],
+            "length_wrt_base": 10},
+    "B" : {
+        "taskID":2,
+        "source_microbatch_id":[2],
+        "sink_microbatch_id":[3],
+        "length_wrt_base": 20},
+     "C": {
+        "taskID":3,
+        "source_microbatch_id": [2],
+        "sink_microbatch_id":[4],
+        "length_wrt_base": 70},
+
+     "D": {
+        "taskID":4,
+        "source_microbatch_id" :[3,4],
+        "sink_microbatch_id":[5,6],
+        "length_wrt_base": 10},
+     "E" : {
+         "taskID":5,
+        "source_microbatch_id":[5,6],
+        "sink_microbatch_id":[7,8],
+        "length_wrt_base": 10}
+     }
+}

@@ -1,0 +1,117 @@
+syntax = "proto3";
+//package home.prasanth.Desktop.CoFEE.src.main.cofee_proto_files.cloud;
+
+// FOG ONBOARDING MESSAGE FORMATS START
+
+message fog_label {
+    int32 label = 1;
+}
+
+message fog_metadata {
+    string fog_ip = 1;
+    repeated fog_label labels = 2;
+}
+
+// FOG ONBOARDING MESSAGE FORMAT ENDS HERE
+
+
+
+// EDGE OBOARDING MESSAGE FORMAT STARTS HERE
+
+message fog_labels {
+        repeated fog_label labels = 1;
+}
+
+message fog_spatial_locality {
+    string fog_ip =1;
+}
+
+
+message fog_info_spatial_locality_list {
+    repeated fog_spatial_locality fog_info_spatial_locality = 1;
+}
+// EDGE ONBOARDING MESSAGE FORMAT ENDS HERE
+
+// DAG INPUT MESSAGE FORMAT STARTS HERE
+
+// register CEP and recheck delta
+message open_filter {
+    float nwlat = 1;
+    float nwlong = 2;
+    float selat = 3;
+    float selong = 4;
+    int32 startTime = 5;
+    int32 endTime = 6;
+    map<string, string> namevalue_filter = 7;
+}
+
+
+message dag_filter_deadline_input {
+    string JSON_PATH_TO_DAG = 1;
+    int32 deadline = 2;
+    open_filter filter = 3;
+}
+
+// Heap update
+message free_slots {
+    map<int32, int32> slot = 1;
+}
+message fog_sequence_free_slots {
+    map<int32, free_slots> free_slot_list = 1;
+}
+message fog_sequence_free_slot_list {
+    repeated fog_sequence_free_slots fog_sequence_free_slots = 1;
+}
+
+message Empty {
+    int32 ack = 1;
+}
+
+// Task metadata
+message task_details {
+    string task_name = 1;
+    int32 task_id = 2;
+    int32 slack_time = 3;
+    float sub_deadline = 4;
+    float base_execution_time = 6;
+    float current_time = 5;
+}
+
+message task_and_open_filter_details {
+    open_filter open_filter = 1;
+    task_details task_details = 2;
+}
+
+// Task bid message
+message bid_metadata {
+    int32 bid = 1;
+    int32 cost = 2;
+    int32 microbatch_id = 3;
+}
+
+message result {
+    int32 bool_status = 1;
+}
+
+
+service cloud {
+    // fog onboarding API
+    rpc register_fog(fog_metadata) returns (Empty);
+    // edge onboarding API
+    rpc request_fog_list(fog_labels) returns (fog_metadata);
+
+    // register DAG input
+    rpc dag_input(dag_filter_deadline_input) returns (Empty);
+
+    // Heap updates to Cloud
+    rpc heap_update(fog_sequence_free_slot_list) returns (Empty);
+
+    // Task done
+    rpc task_done(task_details) returns (Empty);
+
+    // Tasks undone
+    rpc task_undone(task_details) returns (Empty);
+
+    // Bid for task on new microbatch
+    rpc bid_for_task_on_new_microbatch(bid_metadata) returns (result);
+}
