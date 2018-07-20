@@ -10,13 +10,23 @@ import math
 
 sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_proto_files/cloud/')
 sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_cloud_service/cloud_scheduler/')
-sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_cloud_service/cloud_dag_manager')
+sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_cloud_service/cloud_dag_manager/')
+sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_cloud_service/cloud_dag_manager/dag_operations/')
+sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/fog_index_manager/cep_engine/')
+sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_cloud_service/config/')
+sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_cloud_service/cloud_index_manager/global_index/')
 import cloud_service_pb2
 import cloud_service_pb2_grpc
 import active_fogs
 
 import timeit
 import lineage_chain
+import Filter
+import unroll_dag
+import dag_ops
+import properties
+import global_index
+import json
 
 class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
 
@@ -77,11 +87,36 @@ class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
         :return:
         '''
 
+        # EXTRACT OPEN FILTER
+        open_filter = Filter()
+        open_filter.spatial_coordinates = (request.filter.nwlat, request.filter.nwlong, request.filter.selat, request.filter.selong)
+        open_filter.time = (request.filter.startTime, request.filter.endTime)
+        open_filter.domain = {}
+        for KVP in request.filter.namevalue_filter:
+            open_filter.domain[KVP] = request.filter.namevalue_filter[KVP]
+
         # partition open filter logic
+        CEP_QUERY = Filter()
+        CEP_QUERY.spatial_coordinates = open_filter.spatial_coordinates
+        CEP_QUERY.domain = open_filter.domain
+        if(open_filter.time[1] > time.time()):
+            CEP_QUERY.time = (time.time(),open_filter.time[1])
+
 
         # slack computation logic
+        DAG_PATH = request.JSON_PATH_TO_DAG
+        with open(DAG_PATH) as dag:
+            data = json.load(dag)
+        task_properties = data["task_properties"]
+        unroll_dag.unroll_dag()
+        dag_ops.main()
+
+
+
 
         # check Global Index(openFilter) logic
+        matched_fogs = []                           # all fog partitions which match open filter are stored here
+
 
         # call recheck_delta in all matched fogs
         response_list = []
@@ -91,9 +126,9 @@ class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
         t.start()
 
 
-
+        # INQUIRE EACH FOG MATCHED BY GLOBAL INDEX
         for fog in matched_fogs:
-            response = cloud_client.recheck_delta()
+            response = cloud_client.inquire_cost_for_task()
             response_list.append(response)
             if(f == 1):
                 break
@@ -103,6 +138,10 @@ class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
 
 
         # compute minimum kappa for all fogs
+        '''
+        BID-DICT contains the following
+        BID_DICT[dag_id, task_id, microbatch_id] = (kappa, fog_endpoint, c, microbatch_size)
+        '''
         BID_DICT = {}
 
         # initialize
@@ -110,28 +149,33 @@ class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
             for rp in response:
                 BID_DICT[rp[0], rp[1], rp[2]] = []
 
-
+        # populate BID_DICT
         for response in response_list:
             for rp in response:
-                BID_DICT[rp[0], rp[1], rp[2]].append(rp[4])
+                BID_DICT[rp[0], rp[1], rp[2]].append((rp[4], rp[5], rp[6], rp[7]))
 
+        # FIND MINIMUM KAPPA IN BID_DICT
         for key in BID_DICT:
             MIN_KAPPA = sys.maxsize
-            for kappa in BID_DICT[key]:
+            for kappa in BID_DICT[key][0]:
                 if(kappa < MIN_KAPPA):
                     MIN_KAPPA = kappa
-                    BID_DICT[key] = MIN_KAPPA
+                    BID_DICT[key][0] = MIN_KAPPA
 
 
+        # ALTERNATE FOG SCHEDULING
         BID_ALT_DICT = {}
         alternate_response_list = []
+
+
+        # DECIDING LOGIC at Cloud
         for key in BID_DICT:
 #            if(BID_DICT[key] != sys.maxsize):
                 # scheduling logic
-                if(BID_DICT[key] <= (math.floor(length_wrt_base(key[2]))/(properties.fog[properties.m])*properties.billing_increment)*(fog_cost[properties[m]])):
+                if(BID_DICT[key][0] <= (math.floor(task_properties[key[2]]["length_wrt_base"])/(properties.FOG_METADATA[properties.m]["no_of_cores"])*properties.FOG_METADATA[properties.m]["billing_increment"])*(properties.FOG_METADATA[properties.m]["unit_cost_of_execution"])):
                     cloud_client.acknowledge_task(dag_id, microbatch_id, task_id, OK, next_task_id[], deadlines[])
                 else:
-                    alternate_fogs = fog_free_slot.alternate_fog_slot()
+                    alternate_fogs = fog_free_slot.alternate_fog_slot(request.task_details, BID_DICT[key][2], BID_DICT[key][3])
                     alternate_fog_response_list = []
                     f = 0
 
@@ -143,13 +187,14 @@ class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
                         alternate_response_list.append(response)
                         if(f == 1):
                             break
-                    for alternate_response in alternate_response_list:
-                        for rp in alternate_response:
-                            BID_ALT_DICT[rp[0]. rp[1], rp[2]] = []
 
                     for alternate_response in alternate_response_list:
                         for rp in alternate_response:
-                            BID_ALT_DICT[rp[0]. rp[1], rp[2]].append(rp[4])
+                            BID_ALT_DICT[rp[0], rp[1], rp[2]] = []
+
+                    for alternate_response in alternate_response_list:
+                        for rp in alternate_response:
+                            BID_ALT_DICT[rp[0], rp[1], rp[2]].append(rp[4])
 
 
                     for key in BID_ALT_DICT:
@@ -174,7 +219,7 @@ class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
                                         B = size*(properties.bandwidth_fog_cloud)
                                     cost = math.floor(task_details.length_wrt_base/(properties.no_of_cores*billing_increment))* cost_to_execute_on_cloud + B
 
-                                    # pull actual microbatch from fog
+                                    # pull actual micro-batch from fog
 
                                     # execute task
                                 else:
@@ -241,6 +286,32 @@ class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
         :param context:
         :return:
         '''
+
+    def update_global_index(self, request, context):
+        '''
+                                        PERIODIC UPDATE OF GLOBAL INDEX BY FOG PARTITION
+        :param request:
+        :param context:
+        :return:
+        '''
+        fog_endpoint = request.fog_endpoint
+        temporal_bloom = []
+        spatial_bloom = []
+        domain_bloom = []
+        i = 0
+        for bloom in request.bloom_filters:
+            for b in bloom.bit:
+                if(i==0):
+                    temporal_bloom.append(b)
+                    i += 1
+                elif(i==1):
+                    spatial_bloom.append(b)
+                    i += 1
+                else:
+                    domain_bloom.append(b)
+
+        global_index.update_global_index((fog_endpoint, temporal_bloom, spatial_bloom, domain_bloom))
+
 
 
 

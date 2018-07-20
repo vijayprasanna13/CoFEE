@@ -3,6 +3,9 @@
 import math
 from io import StringIO
 import heapq
+import sys
+sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_cloud_service/config/')
+import properties
 
 # map with fog_ip and heaps
 FOGS_AND_FREE_SLOTS_MAP = {}
@@ -77,12 +80,14 @@ find_longest_free_slot('12.25.45.27')
 find_longest_free_slot('12.25.45.27')
 '''
 
+
+
 class SlotNode():
     def __init__(self,fog_ip,  slot_start, slot_end):
         self.fog_ip = fog_ip
         self.start = slot_start
         self.end = slot_end
-        self.status  = None
+        self.status = None
 
 def add_new_fog(fog_ip):
     FOGS_AND_FREE_SLOTS_MAP[fog_ip] = []
@@ -94,21 +99,28 @@ def update_free_slot_fog(fog_ip, free_slot_list):
         FOGS_AND_FREE_SLOTS_MAP[fog_ip].append(SlotNode(fog_ip, slot[0], slot[1]))
 
 
-def alternate_fog_slot():
-    for fog in properties.fogs:      # take only properties.m cheapest
+def alternate_fog_slot(task_details, c, size):
+    i = 0
+
+    # this is assuming properties.fogs has fog metadata sorted according to ascending cost of execution
+    for fog in properties.fogs:      #
         for slot in FOGS_AND_FREE_SLOTS_MAP[fog.fog_ip]:
             if(slot.end <= time.time()):
                 FOGS_AND_FREE_SLOTS_MAP[fog.fog_ip].remove(slot)        # delete the slot
             else:
-                start = max(time.time() + properties.Cloud_timeout + (c + size(microbatch)/properties.bandwidth_fog_fog+ properties.latency), slot.start)
-                condition1 = start + task_details.length_wrt_base/properties.no_of_cores[fog_ip] <= sub_deadline_of_task
-                condition2 = start + task_details.length_wrt_base/properties.no_of_cores[fog_ip] <= slot.end
+                start = max(time.time() + properties.Cloud_timeout + (c + size/properties.bandwidth_fog_fog + properties.latency), slot.start)
+                condition1 = start + task_details.length_wrt_base/properties.FOG_METADATA[fog_ip]["no_of_cores"] <= task_details.sub_deadline
+                condition2 = start + task_details.length_wrt_base/properties.FOG_METADATA[fog_ip]["no_of_cores"] <= slot.end
 
                 if(condition2 and condition1):
                     ALTERNATE_FOGS.append(fog.fog_ip)
 
                 if(slot.start < time.time()):
                     slot.start = time.time()
+
+        i += 1
+        if(i == properties.m):           #take only properties.m cheapest
+            break
 
 
     return ALTERNATE_FOGS

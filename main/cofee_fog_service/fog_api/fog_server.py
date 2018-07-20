@@ -2,6 +2,7 @@ import grpc
 from concurrent import futures
 import time
 import sys
+import math
 import datetime
 
 
@@ -9,7 +10,7 @@ sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_proto_files/')
 sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/fog_index_manager/cep_engine/')
 sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/fog_scheduler/')
 sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/fog_utilities/')
-sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/fog_index_manager')
+sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/fog_index_manager/')
 sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/config/')
 
 import fog_service_pb2
@@ -22,6 +23,7 @@ import edge_data
 import conditional_equations
 import slots
 import properties
+import tasks
 
 
 
@@ -68,13 +70,13 @@ class fogServicer(fog_service_pb2_grpc.fogServicer):
         # send this open filter to CEP engine
 
 
-    def recheck_delta(self, request, context):
+    def inquire_cost_for_task(self, request, context):
         '''
-                                RECHECK OPEN FILTER WITH DELTA and LOCAL INDEX FOR SAKE OF FALSE POSITIVES
+                            RECHECK OPEN FILTER WITH DELTA AND LOCAL INDEX FOR SAKE OF FALSE POSITIVES
+                                         RETURN THIS FOG PARTITION'S BID
         :param request:
-            OPEN FILTER,
         :param context:
-        :return:
+        :return:    dag_id, task_id, microbatch_id, kappa, fog_endpoint
         '''
         request_time = datetime.datetime.now()
 
@@ -92,7 +94,7 @@ class fogServicer(fog_service_pb2_grpc.fogServicer):
         for key in request.open_filter.namevalue_filter:
             open_filter.domain[key] = request.open_filter.namevalue_filter[key]
 
-        # contains microbatches matched by given open filter in fog partition
+        # contains microbatches and respective endpoint list matched by given open filter in fog partition
         matched_microbatch_device_list = []
 
         # check output from local index
@@ -100,89 +102,97 @@ class fogServicer(fog_service_pb2_grpc.fogServicer):
         if not local_index_matches:
             print("no matches in local index for open filter")
         else:
-            for microbatch_data, ip in local_index_matches:
-                matched_microbatch_device_list.append((microbatch_data,ip))
+            for microbatch_metadata, endpoint_list in local_index_matches:
+                matched_microbatch_device_list.append((microbatch_metadata,endpoint_list))
 
         # check output from delta index
         delta_index_matches = query_index.query_delta_index(open_filter)
         if not delta_index_matches:
             print("no matches in delta index for open filter")
         else:
-            for microbatch_data, ip in query_index.query_delta_index(open_filter):
-                matched_microbatch_device_list.append((microbatch_data, ip))
+            for microbatch_metadata, endpoint_list in query_index.query_delta_index(open_filter):
+                matched_microbatch_device_list.append((microbatch_metadata, endpoint_list))
 
 
-        # queried data in matched_micro-batch_device_list[]
+        # queried microbatch meta data and list of edge/fog endpoints containing that microbatch in matched_microbatch_device_list[]
 
-
+        '''
+        kappa_values is of the following format :-
+        kappa_values[edge, microbatch_data] = kappa
+        '''
         kappa_values = {}
         # for each micro-batch, fog to check whether it can execute
         # the source task on the micro-batch before the sub-deadline for the task
-        for microbatch_data, ip_list in matched_microbatch_device_list:      # iterate over all matched micro-batches
+        for microbatch_data, endpoint_list in matched_microbatch_device_list:      # iterate over all matched micro-batches
             for edge in edge_data.EDGE_LIST:                      # iterate over all edges in self partition
-                if((edge[1] == "free") and (conditional_equations.is_executable(microbatch_data.size, edge, request.task_details, ip_list))):      # edge is free if it is not executing a task or replicating a micro-batch or executing a task    # equation 4.1
-                        kappa_values[edge, microbatch_data] = conditional_equations.compute_expected_maximum_cost(microbatch_data.size, edge, request.task_details, 10, ip_list)     # equation 4.2
+                if((edge[1] == "free") and (conditional_equations.is_executable(microbatch_data.size, edge, request.task_details, endpoint_list))):      # edge is free if it is not executing a task or replicating a micro-batch or executing a task    # equation 4.1
+                        kappa_values[edge, microbatch_data] = conditional_equations.compute_expected_maximum_cost(microbatch_data.size, edge, request.task_details, endpoint_list)     # equation 4.2
 
 
+
+        '''
+        refactored_kappa_values is of the following format :- 
+        refactored_kappa_values[microbatch_data] = [(edge, kappa), (edge, kappa), ...]
+        '''
         refactored_kappa_values = {}
-        for microbatch_data in matched_microbatch_device_list:
+        for microbatch_data, endpoint_list in matched_microbatch_device_list:
             li = []
             for key in kappa_values:
                 if(key[1] == microbatch_data):
                     li.append((key[0], kappa_values[key[0], microbatch_data]))
             refactored_kappa_values[microbatch_data] = li
 
-        for mubatch in refactored_kappa_values:
-            sorted(refactored_kappa_values[mubatch], key=lambda x: x[1])
+
+        # sort in ascending order
+        for microbatch_metadata in refactored_kappa_values:
+            sorted(refactored_kappa_values[microbatch_metadata], key=lambda x: x[1])
 
 
 
         # Reserve slot in fog device.
-
-        for mubatch in refactored_kappa_values:
+        for microbatch_metadata in refactored_kappa_values:
             flag = 0
-            for edge in refactored_kappa_values[mubatch]:
-                if(slots.scout_slot(request.task_details, conditional_equations.omega(),request.task_details.sub_deadline, mubatch)):
-                    flag = 1
+            endpoint_list = []
+            for microbatch, endpoints in matched_microbatch_device_list:
+                if(microbatch == microbatch_metadata):
+                    endpoint_list = endpoint_list
 
-                    # persist edge device in GLOBAL MAP for dag_id, mubatch_id, task_id
+            # scout for slot in fog assuming edge executes the task
+            for edge, kappa in refactored_kappa_values[microbatch_metadata]:
+                if(slots.scout_slot(request.task_details, conditional_equations.omega(microbatch_metadata.size, edge, request.task_details, endpoint_list),request.task_details.sub_deadline, microbatch_metadata.microbatch_id)):
+                    flag = 1
+                    tasks.TASK_MAPPING[request.task_details.dag_id, request.task_details.task_id, microbatch_metadata.microbatch_id] = edge
                     # call cloud server with necessary parameters and edge kappa
                     break
 
+            # unable to find corresponding slot in Fog assuming Edge executes it
 
+            # trying to execute of Fog itself
             if(flag == 0):
-                c = conditional_equations.get_replication_time(size(mubatch), fog ,ip_list)
-                if(slots.scout_slot(request.task_details, time.time()+ properties.Cloud_Timeout+c, request.deadline, mubatch)):
-                  flag = 1
+                c = 0
+                fog_ip = properties.ip
+                if(fog_ip in endpoint_list):
+                    c = 0
+                else:
+                    c = sys.maxsize
+                    for ip in endpoint_list:
+                        temp = properties.LATENCY_MAP[fog_ip, ip] + float(microbatch_metadata.size/properties.BANDWIDTH_MAP[fog_ip, ip])
+                        if(temp < c):
+                            c = temp
+                if(slots.scout_slot(request.task_details, time.time()+ properties.Cloud_Timeout+c, request.task_details.sub_deadline, microbatch_metadata)):
+                    flag = 1
+                    if(properties.ip in endpoint_list):
+                        _R = 0
+                    else:
+                        _R = microbatch_metadata.size*properties.bandwidth_edge_fog
+                    fog_kappa_cost = math.floor(request.task_details.base_execution_time/(properties.no_of_cores*properties.billing_increment))*properties.cost_of_execution + _R
                   # call cloud server with Fog Kappa, task and microbatch
 
 
             if(flag == 0):
                 # return kappa = infinity with other parameters(task and microbATCH ID)
+                pass
 
-
-
-
-
-
-
-
-
-
-        '''
-        CORE SLOT SCHEDULING ALGORITHM
-        please use the library fog_scheduling
-        '''
-        '''
-        while(not_done_scheduling):
-            # sort the edges based on their increasing order of kappa
-            cheapest_edge = sort(kappa_values)
-            CHECK_FOR_FREE_SLOT(edge, task)     # access slots.py
-
-            # slot reservation on self fog
-            
-            GIVEN (OMEGA,SUB-DEADLINE FOR TASK)
-        '''
 
     def acknowledge_task(self, request, context):
         '''
@@ -338,7 +348,7 @@ class fogServicer(fog_service_pb2_grpc.fogServicer):
         found = 0
         # create open filter out of microbatch metadata
 
-        open_filter = open_filter(microabatch_time, space, KVP)
+        open_filter = open_filter(microbatch_time, space, KVP)
 
         # query local index
         # query delta index

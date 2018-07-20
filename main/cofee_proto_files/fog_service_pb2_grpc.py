@@ -30,8 +30,8 @@ class fogStub(object):
         request_serializer=cloud__service__pb2.task_and_open_filter_details.SerializeToString,
         response_deserializer=cloud__service__pb2.Empty.FromString,
         )
-    self.recheck_delta = channel.unary_unary(
-        '/fog/recheck_delta',
+    self.inquire_cost_for_task = channel.unary_unary(
+        '/fog/inquire_cost_for_task',
         request_serializer=cloud__service__pb2.task_and_open_filter_details.SerializeToString,
         response_deserializer=fog__service__pb2.matched_microbatch_list.FromString,
         )
@@ -87,9 +87,9 @@ class fogServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
-  def recheck_delta(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+  def inquire_cost_for_task(self, request, context):
+    """rpc recheck_delta(task_and_open_filter_details) returns (matched_microbatch_list);
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
@@ -116,15 +116,16 @@ class fogServicer(object):
     raise NotImplementedError('Method not implemented!')
 
   def request_bid_for_task(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """MOVED TO ALTERNATE_FOG_CHECK
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
   def termination_notice(self, request, context):
-    # missing associated documentation comment in .proto file
-    pass
+    """alternate fog check API
+    rpc alternate_fog_check(task, sub_deadline, microbatch, fog_ip_containing_microatch, c, size(microbatch)) returns (dag_id, microbatch_id, task_id,:true, kappa)
+    """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
@@ -147,8 +148,8 @@ def add_fogServicer_to_server(servicer, server):
           request_deserializer=cloud__service__pb2.task_and_open_filter_details.FromString,
           response_serializer=cloud__service__pb2.Empty.SerializeToString,
       ),
-      'recheck_delta': grpc.unary_unary_rpc_method_handler(
-          servicer.recheck_delta,
+      'inquire_cost_for_task': grpc.unary_unary_rpc_method_handler(
+          servicer.inquire_cost_for_task,
           request_deserializer=cloud__service__pb2.task_and_open_filter_details.FromString,
           response_serializer=fog__service__pb2.matched_microbatch_list.SerializeToString,
       ),

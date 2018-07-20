@@ -1,6 +1,5 @@
 '''
 Partition filter
-
 '''
 
 import time
@@ -17,6 +16,4 @@ def partition_query(t_b,t_e):    # t_b and t_e is in epoch
         pass    # pastQuery
 	else:
         pass    # deltaQuery
-        
-    
 '''

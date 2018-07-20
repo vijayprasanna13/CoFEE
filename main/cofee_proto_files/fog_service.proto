@@ -4,7 +4,7 @@ syntax = "proto3";
 import "cloud_service.proto";
 
 
-// EDGE REGISTRATION Messag es
+// EDGE REGISTRATION Messages
 message edge_metadata {
     int32 ip = 1;
     int32 number_of_cores = 2;
@@ -22,6 +22,8 @@ message microbatch_metadata {
     int32 endTime = 6;
     map<string,string> prop = 7;
 }
+
+
 
 message new_microbatch_metadata {
      microbatch_metadata mubatch_metadata = 1;
@@ -57,7 +59,9 @@ service fog {
 
     // register CEP for open filter and recheck delta index in Fog
     rpc register_cep(task_and_open_filter_details) returns (Empty);
-    rpc recheck_delta(task_and_open_filter_details) returns (matched_microbatch_list);
+
+    rpc inquire_cost_for_task(task_and_open_filter_details) returns (matched_microbatch_list);
+    // rpc recheck_delta(task_and_open_filter_details) returns (matched_microbatch_list);
 
     rpc check_local_index(task_and_open_filter_details) returns (matched_microbatch_list);
     rpc acknowledge_task(task_details) returns (Empty);

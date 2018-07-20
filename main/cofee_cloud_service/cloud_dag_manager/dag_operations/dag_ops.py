@@ -1,7 +1,7 @@
 import sys
 import json
 sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_cloud_service/cloud_dag_manager/')
-import lineage_chain
+import unroll_dag
 
 
 # specify absolute path of the DAG in Json format here
@@ -11,13 +11,13 @@ DAG_PATH = '/home/prasanth/Desktop/CoFEE/src/input_dags/test_dag.json'
 with open(DAG_PATH) as dag:
     data = json.load(dag)
 
-# lineage chain list
-LINEAGE_CHAINS = lineage_chain.LIST_OF_LINEAGE_CHAINS
+# unrolled dag path list
+UNROLLED_DAG_PATH_LIST = unroll_dag.LIST_OF_UNROLLED_DAG
 
 TASK_PROPERTIES = data["task_properties"]
 
-# baseline resource execution cost of all lineage chains
-LINEAGE_CHAIN_LENGTH = []
+# baseline resource execution cost of all unrolled dag paths
+UNROLLED_DAG_PATH_LENGTH = []
 
 # maintains a hashmap of all tasks and their slack time
 GLOBAL_TASKS_SLACK_MAP = {}

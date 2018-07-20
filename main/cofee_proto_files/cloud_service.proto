@@ -94,11 +94,25 @@ message result {
 }
 
 
+// fog bloom filter properties
+message bloom_filter {
+    int32 size = 1;
+    repeated int32 bit = 2;
+}
+
+message local_index_input{
+    string fog_endpoint = 1;
+    repeated bloom_filter bloom_filters = 2;
+}
+
 service cloud {
     // fog onboarding API
     rpc register_fog(fog_metadata) returns (Empty);
     // edge onboarding API
     rpc request_fog_list(fog_labels) returns (fog_metadata);
+
+    // global index update
+    rpc update_global_index(local_index_input) returns (Empty);
 
     // register DAG input
     rpc dag_input(dag_filter_deadline_input) returns (Empty);

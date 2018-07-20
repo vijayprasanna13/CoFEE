@@ -19,5 +19,16 @@ Cloud_Timeout = 10
 
 
 '''
-CONNECTED EDGE LATENCY AND BANDWIDTH
+CONNECTED EDGE LATENCY AND BANDWIDTH BETWEEN ALL EDGE AND FOG ENDPOINTS 
+TO BE POPULATED INITIALLY BOOTSTRAP
 '''
+
+LATENCY_MAP = {}
+'''
+LATENCY_MAP[endpoint1, endpoint2] = latency_value
+'''
+BANDWIDTH_MAP = {}
+'''
+BANDWIDTH_MAP[endpoint1, endpoint2] = bandwidth_value
+'''
+billing_increment = 10

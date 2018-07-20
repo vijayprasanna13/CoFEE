@@ -26,12 +26,18 @@ LINEAGE_CHAIN_MAP = {}
 map of all source micro-batch ids and list of tasks going through them
 '''
 
-source_microbatches = task_properties[source_task]["source_microbatch_id"]
+'''
+LINEAGE_CHAIN IS OF THE FORM :- 
+    LINEAGE_CHAIN_MAP[dag_id, task_id, microbatch] = [(source_microbatch, task_id, sink_microbatch), (), ]
+
+'''
+task_properties = data["task_properties"]
+source_microbatches = task_properties[data["dag_properties"]["source_task"]["taskID"]]["source_microbatch_id"]
 print(source_microbatches)
 
 
 for microbatch in source_microbatches:
-    LINEAGE_CHAIN_MAP[microbatch] = []
+    LINEAGE_CHAIN_MAP[data["DAG_ID"], data["dag_properties"]["source_task"]["taskID"], microbatch] = []
 
 
 print(LINEAGE_CHAIN_MAP)

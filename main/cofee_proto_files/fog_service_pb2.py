@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='fog_service.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x11\x66og_service.proto\x1a\x13\x63loud_service.proto\"4\n\redge_metadata\x12\n\n\x02ip\x18\x01 \x01(\x05\x12\x17\n\x0fnumber_of_cores\x18\x02 \x01(\x05\"\xcd\x01\n\x13microbatch_metadata\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x10\n\x08sensorid\x18\x02 \x01(\x05\x12\x0b\n\x03lat\x18\x03 \x01(\x02\x12\x0c\n\x04long\x18\x04 \x01(\x02\x12\x11\n\tstartTime\x18\x05 \x01(\x05\x12\x0f\n\x07\x65ndTime\x18\x06 \x01(\x05\x12,\n\x04prop\x18\x07 \x03(\x0b\x32\x1e.microbatch_metadata.PropEntry\x1a+\n\tPropEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"Z\n\x17new_microbatch_metadata\x12.\n\x10mubatch_metadata\x18\x01 \x01(\x0b\x32\x14.microbatch_metadata\x12\x0f\n\x07\x65\x64ge_ip\x18\x02 \x01(\x05\"u\n\x12matched_microbatch\x12%\n\x01m\x18\x01 \x03(\x0b\x32\x1a.matched_microbatch.MEntry\x12\x0e\n\x06lambda\x18\x02 \x01(\x05\x1a(\n\x06MEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\"S\n\x17matched_microbatch_list\x12\x38\n\x1bmultiple_matched_microbatch\x18\x01 \x03(\x0b\x32\x13.matched_microbatch\"\"\n\x11term_notice_gamma\x12\r\n\x05gamma\x18\x01 \x01(\x05\x32\xea\x03\n\x03\x66og\x12\'\n\rregister_edge\x12\x0e.edge_metadata\x1a\x06.Empty\x12\x32\n\x0enew_microbatch\x12\x18.new_microbatch_metadata\x1a\x06.Empty\x12\x35\n\x0cregister_cep\x12\x1d.task_and_open_filter_details\x1a\x06.Empty\x12H\n\rrecheck_delta\x12\x1d.task_and_open_filter_details\x1a\x18.matched_microbatch_list\x12L\n\x11\x63heck_local_index\x12\x1d.task_and_open_filter_details\x1a\x18.matched_microbatch_list\x12)\n\x10\x61\x63knowledge_task\x12\r.task_details\x1a\x06.Empty\x12$\n\x0breject_task\x12\r.task_details\x1a\x06.Empty\x12\x34\n\x14request_bid_for_task\x12\r.task_details\x1a\r.bid_metadata\x12\x30\n\x12termination_notice\x12\x12.term_notice_gamma\x1a\x06.Emptyb\x06proto3')
+  serialized_pb=_b('\n\x11\x66og_service.proto\x1a\x13\x63loud_service.proto\"4\n\redge_metadata\x12\n\n\x02ip\x18\x01 \x01(\x05\x12\x17\n\x0fnumber_of_cores\x18\x02 \x01(\x05\"\xcd\x01\n\x13microbatch_metadata\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x10\n\x08sensorid\x18\x02 \x01(\x05\x12\x0b\n\x03lat\x18\x03 \x01(\x02\x12\x0c\n\x04long\x18\x04 \x01(\x02\x12\x11\n\tstartTime\x18\x05 \x01(\x05\x12\x0f\n\x07\x65ndTime\x18\x06 \x01(\x05\x12,\n\x04prop\x18\x07 \x03(\x0b\x32\x1e.microbatch_metadata.PropEntry\x1a+\n\tPropEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"Z\n\x17new_microbatch_metadata\x12.\n\x10mubatch_metadata\x18\x01 \x01(\x0b\x32\x14.microbatch_metadata\x12\x0f\n\x07\x65\x64ge_ip\x18\x02 \x01(\x05\"u\n\x12matched_microbatch\x12%\n\x01m\x18\x01 \x03(\x0b\x32\x1a.matched_microbatch.MEntry\x12\x0e\n\x06lambda\x18\x02 \x01(\x05\x1a(\n\x06MEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\"S\n\x17matched_microbatch_list\x12\x38\n\x1bmultiple_matched_microbatch\x18\x01 \x03(\x0b\x32\x13.matched_microbatch\"\"\n\x11term_notice_gamma\x12\r\n\x05gamma\x18\x01 \x01(\x05\x32\xf2\x03\n\x03\x66og\x12\'\n\rregister_edge\x12\x0e.edge_metadata\x1a\x06.Empty\x12\x32\n\x0enew_microbatch\x12\x18.new_microbatch_metadata\x1a\x06.Empty\x12\x35\n\x0cregister_cep\x12\x1d.task_and_open_filter_details\x1a\x06.Empty\x12P\n\x15inquire_cost_for_task\x12\x1d.task_and_open_filter_details\x1a\x18.matched_microbatch_list\x12L\n\x11\x63heck_local_index\x12\x1d.task_and_open_filter_details\x1a\x18.matched_microbatch_list\x12)\n\x10\x61\x63knowledge_task\x12\r.task_details\x1a\x06.Empty\x12$\n\x0breject_task\x12\r.task_details\x1a\x06.Empty\x12\x34\n\x14request_bid_for_task\x12\r.task_details\x1a\r.bid_metadata\x12\x30\n\x12termination_notice\x12\x12.term_notice_gamma\x1a\x06.Emptyb\x06proto3')
   ,
   dependencies=[cloud__service__pb2.DESCRIPTOR,])
 
@@ -434,7 +434,7 @@ _FOG = _descriptor.ServiceDescriptor(
   index=0,
   options=None,
   serialized_start=637,
-  serialized_end=1127,
+  serialized_end=1135,
   methods=[
   _descriptor.MethodDescriptor(
     name='register_edge',
@@ -464,8 +464,8 @@ _FOG = _descriptor.ServiceDescriptor(
     options=None,
   ),
   _descriptor.MethodDescriptor(
-    name='recheck_delta',
-    full_name='fog.recheck_delta',
+    name='inquire_cost_for_task',
+    full_name='fog.inquire_cost_for_task',
     index=3,
     containing_service=None,
     input_type=cloud__service__pb2._TASK_AND_OPEN_FILTER_DETAILS,

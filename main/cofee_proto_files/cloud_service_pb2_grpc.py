@@ -24,6 +24,11 @@ class cloudStub(object):
         request_serializer=cloud__service__pb2.fog_labels.SerializeToString,
         response_deserializer=cloud__service__pb2.fog_metadata.FromString,
         )
+    self.update_global_index = channel.unary_unary(
+        '/cloud/update_global_index',
+        request_serializer=cloud__service__pb2.local_index_input.SerializeToString,
+        response_deserializer=cloud__service__pb2.Empty.FromString,
+        )
     self.dag_input = channel.unary_unary(
         '/cloud/dag_input',
         request_serializer=cloud__service__pb2.dag_filter_deadline_input.SerializeToString,
@@ -64,6 +69,13 @@ class cloudServicer(object):
 
   def request_fog_list(self, request, context):
     """edge onboarding API
+    """
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
+  def update_global_index(self, request, context):
+    """global index update
     """
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details('Method not implemented!')
@@ -116,6 +128,11 @@ def add_cloudServicer_to_server(servicer, server):
           servicer.request_fog_list,
           request_deserializer=cloud__service__pb2.fog_labels.FromString,
           response_serializer=cloud__service__pb2.fog_metadata.SerializeToString,
+      ),
+      'update_global_index': grpc.unary_unary_rpc_method_handler(
+          servicer.update_global_index,
+          request_deserializer=cloud__service__pb2.local_index_input.FromString,
+          response_serializer=cloud__service__pb2.Empty.SerializeToString,
       ),
       'dag_input': grpc.unary_unary_rpc_method_handler(
           servicer.dag_input,
