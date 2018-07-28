@@ -37,6 +37,7 @@ def microbatch_gen(sensor_prop):
         #microbatch_properties.append(prop)
         if(count == (no_of_prop-1)):
             break
+        count += 1
 
     print("MICROBATCH METADATA GENERATED :- ")
     print(microbatch_spatial_locality)
@@ -50,13 +51,14 @@ def microbatch_gen(sensor_prop):
     print("microbatch_payload and size :- ")
     print(microbatch_payload)
     print(batch_size)
-    return microbatch_id, microbatch_spatial_locality, microbatch_temporal_range, microbatch_properties, batch_size, microbatch_payload
+    device_endpoint = sensor_prop["device_endpoint"]
+    return microbatch_id, microbatch_spatial_locality, microbatch_temporal_range, microbatch_properties, batch_size, microbatch_payload, device_endpoint
 
 '''
 converts the generated microbatch data into standard predefined Microbatch class 
 '''
-def convert_to_class(microbatch_id,microbatch_spatial_locality,microbatch_temporal_range,microbatch_properties,batch_size, microbatch_payload,sensor_prop):
-    microbatch_object = MicroBatch(microbatch_id, sensor_prop["sensorid"])
+def convert_to_class(microbatch_id, microbatch_spatial_locality, microbatch_temporal_range, microbatch_properties, batch_size, microbatch_payload, sensor_prop):
+    microbatch_object = MicroBatch(microbatch_id, sensor_prop["sensorid"], sensor_prop["device_endpoint"])
     microbatch_object.set_spatial_region(microbatch_spatial_locality)
     microbatch_object.set_timestamp(microbatch_temporal_range)
     microbatch_object.set_microbatch_prop(microbatch_properties)
@@ -86,15 +88,19 @@ def generate_and_store():
     sensor_prop = data["sensor_generated_microbatch_properties"]
 
     # get all fields of the microbatch from the data generating function
-    microbatch_id,microbatch_spatial_locality,microbatch_temporal_range,microbatch_properties,batch_size, microbatch_payload = microbatch_gen(sensor_prop)
+    microbatch_id, microbatch_spatial_locality, microbatch_temporal_range, microbatch_properties, batch_size, microbatch_payload, device_endpoint = microbatch_gen(sensor_prop)
 
     # convert all the fields into a MicroBatch object
-    microbatch_object = convert_to_class(microbatch_id,microbatch_spatial_locality,microbatch_temporal_range,microbatch_properties,batch_size, microbatch_payload,sensor_prop)
+    microbatch_object = convert_to_class(microbatch_id, microbatch_spatial_locality, microbatch_temporal_range, microbatch_properties, batch_size, microbatch_payload, sensor_prop)
 
     # get shared location to persist microbatch
     SHARED_MICROBATCH_RESOURCE_LOCATION_FILE = sensor_prop["MICROBATCH_SHARED_FILE_PATH"] + str(microbatch_object.get_micro_batch_id())+'.pkl'
-
+    print("microbatch uuid :- ")
+    print(microbatch_object.get_micro_batch_id())
     # persist microbatch
     persist_object(microbatch_object, SHARED_MICROBATCH_RESOURCE_LOCATION_FILE)
 
-generate_and_store()
+
+
+for i in range(10):
+    generate_and_store()

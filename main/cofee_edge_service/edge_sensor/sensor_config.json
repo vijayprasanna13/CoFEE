@@ -2,6 +2,7 @@
   "sensor_generated_microbatch_properties":
     {
       "sensorid":1,
+      "device_endpoint": "10.24.24.106",
       "microbatch_spatial_northwest_latitude":1,
       "microbatch_spatial_northwest_longitude":1,
       "microbatch_spatial_southeast_longitude":4,

@@ -6,10 +6,12 @@ class MicroBatch():
     microbatch_prop = None
     payload = None
     size = None
+    device_endpoint = None
 
-    def __init__(self, micro_batch_id, sensor_id):
+    def __init__(self, micro_batch_id, sensor_id, device_endpoint):
         self.micro_batch_id = micro_batch_id
         self.sensor_id = sensor_id
+        self.device_endpoint = device_endpoint
 
     def set_spatial_region(self, spatial_coordinates):
         self.spatial_coordinates = spatial_coordinates
