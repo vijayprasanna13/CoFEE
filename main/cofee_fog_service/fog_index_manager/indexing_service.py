@@ -7,11 +7,11 @@ INDEXING SERVICE WHICH HANDLES FUNCTIONS LIKE :-
 import time
 import sys, os
 import pickle
-sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/fog_index_manager/local_index/')
-sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/fog_index_manager/delta_index/')
+sys.path.append('/Users/pyadla/Downloads/CoFEE-master/main/cofee_fog_service/fog_index_manager/local_index/')
+sys.path.append('/Users/pyadla/Downloads/CoFEE-master/main/cofee_fog_service/fog_index_manager/delta_index/')
 
 
-MICROBATCH_GENERATED_PATH = "/home/prasanth/Desktop/CoFEE/src/main/cofee_edge_service/edge_user_data/stored_microbatches/"
+MICROBATCH_GENERATED_PATH = "/Users/pyadla/Downloads/CoFEE-master/main/cofee_edge_service/edge_user_data/stored_microbatches/"
 
 import delta_index
 import local_index
@@ -29,7 +29,8 @@ def populate_file_list_of_microbatches():
 def deserialize_and_add_all_microbatches_to_delta_index():
     for f in generated_microbatch_file_list:
         fileObject = open(MICROBATCH_GENERATED_PATH+str(f), 'rb')
-        microbatch_object = pickle.load(fileObject, errors='ignore')
+        microbatch_object = pickle.load(fileObject)
+        #microbatch_object = pickle.load(fileObject, errors='ignore')
         #print(microbatch_object.get_microbatch_prop())
         delta_index.add_microbatch(microbatch_object.get_micro_batch_id(), microbatch_object.get_spatial_region(),
                    microbatch_object.get_timestamp(), microbatch_object.get_microbatch_prop(), microbatch_object)
@@ -65,3 +66,4 @@ while(True):
 '''
 
 periodic_update_local()
+#update_delta_index()

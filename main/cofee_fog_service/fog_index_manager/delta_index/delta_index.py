@@ -1,8 +1,8 @@
 # implement delta index
 import pickle
 import os, sys, importlib
-MICROBATCH_GENERATED_PATH = "/home/prasanth/Desktop/CoFEE/src/main/cofee_edge_service/edge_user_data/stored_microbatches/"
-sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_edge_service/')
+MICROBATCH_GENERATED_PATH = "/Users/pyadla/Downloads/CoFEE-master/main/cofee_edge_service/edge_user_data/stored_microbatches/"
+sys.path.append('/Users/pyadla/Downloads/CoFEE-master/main/cofee_edge_service/')
 from MicroBatch import MicroBatch
 
 

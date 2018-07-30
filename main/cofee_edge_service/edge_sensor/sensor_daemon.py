@@ -5,7 +5,7 @@ import random
 import datetime
 import numpy as np
 import sys
-sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_edge_service/')
+sys.path.append('/Users/pyadla/Downloads/CoFEE-master/main/cofee_edge_service/')
 from MicroBatch import MicroBatch
 import pickle
 
