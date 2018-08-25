@@ -31,7 +31,7 @@ class fogServicer(fog_service_pb2_grpc.fogServicer):
     def register_edge(self, request, context):
         '''
                                 EDGE ONBOARDING
-        :param request: contains edge_ip and no_of_cores
+        :param request: contains edge endpoint and no_of_cores
         :param context:
         :return:
         '''
@@ -40,9 +40,8 @@ class fogServicer(fog_service_pb2_grpc.fogServicer):
 
     def new_microbatch(self, request, context):
         '''
-
-                                NEW MICROBATCH GENERATED @EDGE OR @FOG
-        :param request:
+                                NEW MICROBATCH GENERATED CALLED BY EDGE
+        :param request: contains edge endpoint and microbatch properties
         :param context:
         :return:
         '''

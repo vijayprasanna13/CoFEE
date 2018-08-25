@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='cloud_service.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x13\x63loud_service.proto\"\x1a\n\tfog_label\x12\r\n\x05label\x18\x01 \x01(\x05\":\n\x0c\x66og_metadata\x12\x0e\n\x06\x66og_ip\x18\x01 \x01(\t\x12\x1a\n\x06labels\x18\x02 \x03(\x0b\x32\n.fog_label\"(\n\nfog_labels\x12\x1a\n\x06labels\x18\x01 \x03(\x0b\x32\n.fog_label\"&\n\x14\x66og_spatial_locality\x12\x0e\n\x06\x66og_ip\x18\x01 \x01(\t\"Z\n\x1e\x66og_info_spatial_locality_list\x12\x38\n\x19\x66og_info_spatial_locality\x18\x01 \x03(\x0b\x32\x15.fog_spatial_locality\"\xe4\x01\n\x0bopen_filter\x12\r\n\x05nwlat\x18\x01 \x01(\x02\x12\x0e\n\x06nwlong\x18\x02 \x01(\x02\x12\r\n\x05selat\x18\x03 \x01(\x02\x12\x0e\n\x06selong\x18\x04 \x01(\x02\x12\x11\n\tstartTime\x18\x05 \x01(\x05\x12\x0f\n\x07\x65ndTime\x18\x06 \x01(\x05\x12;\n\x10namevalue_filter\x18\x07 \x03(\x0b\x32!.open_filter.NamevalueFilterEntry\x1a\x36\n\x14NamevalueFilterEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"e\n\x19\x64\x61g_filter_deadline_input\x12\x18\n\x10JSON_PATH_TO_DAG\x18\x01 \x01(\t\x12\x10\n\x08\x64\x65\x61\x64line\x18\x02 \x01(\x05\x12\x1c\n\x06\x66ilter\x18\x03 \x01(\x0b\x32\x0c.open_filter\"^\n\nfree_slots\x12#\n\x04slot\x18\x01 \x03(\x0b\x32\x15.free_slots.SlotEntry\x1a+\n\tSlotEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\"\x9f\x01\n\x17\x66og_sequence_free_slots\x12\x42\n\x0e\x66ree_slot_list\x18\x01 \x03(\x0b\x32*.fog_sequence_free_slots.FreeSlotListEntry\x1a@\n\x11\x46reeSlotListEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x1a\n\x05value\x18\x02 \x01(\x0b\x32\x0b.free_slots:\x02\x38\x01\"X\n\x1b\x66og_sequence_free_slot_list\x12\x39\n\x17\x66og_sequence_free_slots\x18\x01 \x03(\x0b\x32\x18.fog_sequence_free_slots\"\x14\n\x05\x45mpty\x12\x0b\n\x03\x61\x63k\x18\x01 \x01(\x05\"\x8f\x01\n\x0ctask_details\x12\x11\n\ttask_name\x18\x01 \x01(\t\x12\x0f\n\x07task_id\x18\x02 \x01(\x05\x12\x12\n\nslack_time\x18\x03 \x01(\x05\x12\x14\n\x0csub_deadline\x18\x04 \x01(\x02\x12\x1b\n\x13\x62\x61se_execution_time\x18\x06 \x01(\x02\x12\x14\n\x0c\x63urrent_time\x18\x05 \x01(\x02\"f\n\x1ctask_and_open_filter_details\x12!\n\x0bopen_filter\x18\x01 \x01(\x0b\x32\x0c.open_filter\x12#\n\x0ctask_details\x18\x02 \x01(\x0b\x32\r.task_details\"@\n\x0c\x62id_metadata\x12\x0b\n\x03\x62id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x15\n\rmicrobatch_id\x18\x03 \x01(\x05\"\x1d\n\x06result\x12\x13\n\x0b\x62ool_status\x18\x01 \x01(\x05\")\n\x0c\x62loom_filter\x12\x0c\n\x04size\x18\x01 \x01(\x05\x12\x0b\n\x03\x62it\x18\x02 \x03(\x05\"9\n\x11local_index_input\x12$\n\rbloom_filters\x18\x01 \x03(\x0b\x32\r.bloom_filter2\xfb\x02\n\x05\x63loud\x12%\n\x0cregister_fog\x12\r.fog_metadata\x1a\x06.Empty\x12.\n\x10request_fog_list\x12\x0b.fog_labels\x1a\r.fog_metadata\x12\x31\n\x13update_global_index\x12\x12.local_index_input\x1a\x06.Empty\x12/\n\tdag_input\x12\x1a.dag_filter_deadline_input\x1a\x06.Empty\x12\x33\n\x0bheap_update\x12\x1c.fog_sequence_free_slot_list\x1a\x06.Empty\x12\"\n\ttask_done\x12\r.task_details\x1a\x06.Empty\x12$\n\x0btask_undone\x12\r.task_details\x1a\x06.Empty\x12\x38\n\x1e\x62id_for_task_on_new_microbatch\x12\r.bid_metadata\x1a\x07.resultb\x06proto3')
+  serialized_pb=_b('\n\x13\x63loud_service.proto\"\x1a\n\tfog_label\x12\r\n\x05label\x18\x01 \x01(\x05\":\n\x0c\x66og_metadata\x12\x0e\n\x06\x66og_ip\x18\x01 \x01(\t\x12\x1a\n\x06labels\x18\x02 \x03(\x0b\x32\n.fog_label\"(\n\nfog_labels\x12\x1a\n\x06labels\x18\x01 \x03(\x0b\x32\n.fog_label\"&\n\x14\x66og_spatial_locality\x12\x0e\n\x06\x66og_ip\x18\x01 \x01(\t\"Z\n\x1e\x66og_info_spatial_locality_list\x12\x38\n\x19\x66og_info_spatial_locality\x18\x01 \x03(\x0b\x32\x15.fog_spatial_locality\"\xe4\x01\n\x0bopen_filter\x12\r\n\x05nwlat\x18\x01 \x01(\x02\x12\x0e\n\x06nwlong\x18\x02 \x01(\x02\x12\r\n\x05selat\x18\x03 \x01(\x02\x12\x0e\n\x06selong\x18\x04 \x01(\x02\x12\x11\n\tstartTime\x18\x05 \x01(\x05\x12\x0f\n\x07\x65ndTime\x18\x06 \x01(\x05\x12;\n\x10namevalue_filter\x18\x07 \x03(\x0b\x32!.open_filter.NamevalueFilterEntry\x1a\x36\n\x14NamevalueFilterEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"e\n\x19\x64\x61g_filter_deadline_input\x12\x18\n\x10JSON_PATH_TO_DAG\x18\x01 \x01(\t\x12\x10\n\x08\x64\x65\x61\x64line\x18\x02 \x01(\x05\x12\x1c\n\x06\x66ilter\x18\x03 \x01(\x0b\x32\x0c.open_filter\"^\n\nfree_slots\x12#\n\x04slot\x18\x01 \x03(\x0b\x32\x15.free_slots.SlotEntry\x1a+\n\tSlotEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\"\x9f\x01\n\x17\x66og_sequence_free_slots\x12\x42\n\x0e\x66ree_slot_list\x18\x01 \x03(\x0b\x32*.fog_sequence_free_slots.FreeSlotListEntry\x1a@\n\x11\x46reeSlotListEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x1a\n\x05value\x18\x02 \x01(\x0b\x32\x0b.free_slots:\x02\x38\x01\"X\n\x1b\x66og_sequence_free_slot_list\x12\x39\n\x17\x66og_sequence_free_slots\x18\x01 \x03(\x0b\x32\x18.fog_sequence_free_slots\"\x14\n\x05\x45mpty\x12\x0b\n\x03\x61\x63k\x18\x01 \x01(\x05\"\x8f\x01\n\x0ctask_details\x12\x11\n\ttask_name\x18\x01 \x01(\t\x12\x0f\n\x07task_id\x18\x02 \x01(\x05\x12\x12\n\nslack_time\x18\x03 \x01(\x05\x12\x14\n\x0csub_deadline\x18\x04 \x01(\x02\x12\x1b\n\x13\x62\x61se_execution_time\x18\x06 \x01(\x02\x12\x14\n\x0c\x63urrent_time\x18\x05 \x01(\x02\"f\n\x1ctask_and_open_filter_details\x12!\n\x0bopen_filter\x18\x01 \x01(\x0b\x32\x0c.open_filter\x12#\n\x0ctask_details\x18\x02 \x01(\x0b\x32\r.task_details\"@\n\x0c\x62id_metadata\x12\x0b\n\x03\x62id\x18\x01 \x01(\x05\x12\x0c\n\x04\x63ost\x18\x02 \x01(\x05\x12\x15\n\rmicrobatch_id\x18\x03 \x01(\x05\"\x1d\n\x06result\x12\x13\n\x0b\x62ool_status\x18\x01 \x01(\x05\")\n\x0c\x62loom_filter\x12\x0c\n\x04size\x18\x01 \x01(\x05\x12\x0b\n\x03\x62it\x18\x02 \x03(\x05\"\x9b\x01\n\x11local_index_input\x12\x14\n\x0c\x66og_endpoint\x18\x01 \x01(\t\x12%\n\x0etemporal_bloom\x18\x02 \x01(\x0b\x32\r.bloom_filter\x12$\n\rspatial_bloom\x18\x03 \x01(\x0b\x32\r.bloom_filter\x12#\n\x0c\x64omain_bloom\x18\x04 \x01(\x0b\x32\r.bloom_filter2\xfb\x02\n\x05\x63loud\x12%\n\x0cregister_fog\x12\r.fog_metadata\x1a\x06.Empty\x12.\n\x10request_fog_list\x12\x0b.fog_labels\x1a\r.fog_metadata\x12\x31\n\x13update_global_index\x12\x12.local_index_input\x1a\x06.Empty\x12/\n\tdag_input\x12\x1a.dag_filter_deadline_input\x1a\x06.Empty\x12\x33\n\x0bheap_update\x12\x1c.fog_sequence_free_slot_list\x1a\x06.Empty\x12\"\n\ttask_done\x12\r.task_details\x1a\x06.Empty\x12$\n\x0btask_undone\x12\r.task_details\x1a\x06.Empty\x12\x38\n\x1e\x62id_for_task_on_new_microbatch\x12\r.bid_metadata\x1a\x07.resultb\x06proto3')
 )
 
 
@@ -766,9 +766,30 @@ _LOCAL_INDEX_INPUT = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='bloom_filters', full_name='local_index_input.bloom_filters', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
+      name='fog_endpoint', full_name='local_index_input.fog_endpoint', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='temporal_bloom', full_name='local_index_input.temporal_bloom', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='spatial_bloom', full_name='local_index_input.spatial_bloom', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='domain_bloom', full_name='local_index_input.domain_bloom', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
@@ -784,8 +805,8 @@ _LOCAL_INDEX_INPUT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1379,
-  serialized_end=1436,
+  serialized_start=1380,
+  serialized_end=1535,
 )
 
 _FOG_METADATA.fields_by_name['labels'].message_type = _FOG_LABEL
@@ -802,7 +823,9 @@ _FOG_SEQUENCE_FREE_SLOTS.fields_by_name['free_slot_list'].message_type = _FOG_SE
 _FOG_SEQUENCE_FREE_SLOT_LIST.fields_by_name['fog_sequence_free_slots'].message_type = _FOG_SEQUENCE_FREE_SLOTS
 _TASK_AND_OPEN_FILTER_DETAILS.fields_by_name['open_filter'].message_type = _OPEN_FILTER
 _TASK_AND_OPEN_FILTER_DETAILS.fields_by_name['task_details'].message_type = _TASK_DETAILS
-_LOCAL_INDEX_INPUT.fields_by_name['bloom_filters'].message_type = _BLOOM_FILTER
+_LOCAL_INDEX_INPUT.fields_by_name['temporal_bloom'].message_type = _BLOOM_FILTER
+_LOCAL_INDEX_INPUT.fields_by_name['spatial_bloom'].message_type = _BLOOM_FILTER
+_LOCAL_INDEX_INPUT.fields_by_name['domain_bloom'].message_type = _BLOOM_FILTER
 DESCRIPTOR.message_types_by_name['fog_label'] = _FOG_LABEL
 DESCRIPTOR.message_types_by_name['fog_metadata'] = _FOG_METADATA
 DESCRIPTOR.message_types_by_name['fog_labels'] = _FOG_LABELS
@@ -979,8 +1002,8 @@ _CLOUD = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=1439,
-  serialized_end=1818,
+  serialized_start=1538,
+  serialized_end=1917,
   methods=[
   _descriptor.MethodDescriptor(
     name='register_fog',

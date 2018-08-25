@@ -50,8 +50,6 @@ def query_global_index(filter):
                 temporal_flag = 1
 
 
-
-
         # spatial check
         for unit in enumerated_spatial_filter:
             for i in range(index_config.hash_count):
@@ -109,6 +107,8 @@ def enumerate_spatial(lat_start, lat_end, long_start, long_end):
     return l
 
 
-
+'''
 def check_global_index(openFilter):
     pass
+
+'''

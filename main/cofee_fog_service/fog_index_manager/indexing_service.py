@@ -11,7 +11,7 @@ sys.path.append('/Users/pyadla/Downloads/CoFEE-master/main/cofee_fog_service/fog
 sys.path.append('/Users/pyadla/Downloads/CoFEE-master/main/cofee_fog_service/fog_index_manager/delta_index/')
 
 
-MICROBATCH_GENERATED_PATH = "/Users/pyadla/Downloads/CoFEE-master/main/cofee_edge_service/edge_user_data/stored_microbatches/"
+MICROBATCH_GENERATED_PATH = "/Users/pyadla/Downloads/CoFEE-master/main/cofee_fog_service/fog_user_data/stored_microbatches/"
 
 import delta_index
 import local_index
@@ -26,7 +26,7 @@ def populate_file_list_of_microbatches():
             generated_microbatch_file_list.append(file)
 
 # deserialize microbatches generated and stored by sensor onto directory
-def deserialize_and_add_all_microbatches_to_delta_index():
+def deserialize_and_update_delta_index():
     for f in generated_microbatch_file_list:
         fileObject = open(MICROBATCH_GENERATED_PATH+str(f), 'rb')
         microbatch_object = pickle.load(fileObject)
@@ -37,7 +37,7 @@ def deserialize_and_add_all_microbatches_to_delta_index():
 
 def update_delta_index():
     populate_file_list_of_microbatches()
-    deserialize_and_add_all_microbatches_to_delta_index()
+    deserialize_and_update_delta_index()
     delta_index.print_delta_index()
 
 
@@ -56,7 +56,14 @@ def periodic_update_local():
         local_index.add_microbatch(id, delta_index.spatial_delta_index[id][0], delta_index.temporal_delta_index[id][0],
                                    delta_index.property_delta_index[id][0], delta_index.spatial_delta_index[id][1])
 
+
     print("DONE UPDATING LOCAL INDEX WITH DELTA INDEX!!")
+
+    print("TYYING TO QUERY THE SAME........")
+    local_index.query_index()
+    print("Querying KVP...")
+    local_index.query_properties()
+
 
 '''
 Uncomment to update periodically

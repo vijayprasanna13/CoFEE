@@ -102,7 +102,9 @@ message bloom_filter {
 
 message local_index_input{
     string fog_endpoint = 1;
-    repeated bloom_filter bloom_filters = 2;
+    bloom_filter temporal_bloom = 2;
+    bloom_filter spatial_bloom = 3;
+    bloom_filter domain_bloom = 4;
 }
 
 service cloud {

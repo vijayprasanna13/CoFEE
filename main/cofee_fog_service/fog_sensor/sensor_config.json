@@ -1,0 +1,29 @@
+{
+  "sensor_generated_microbatch_properties":
+    {
+      "sensorid":1,
+      "device_endpoint": "10.24.24.106",
+      "mu_id_start":5,
+      "microbatch_spatial_northwest_latitude":1,
+      "microbatch_spatial_northwest_longitude":1,
+      "microbatch_spatial_southeast_longitude":4,
+      "microbatch_spatial_southeast_latitude":4,
+      "microbatch_spatial_southwest_latitude":1 ,
+      "microbatch_spatial_southwest_longitude":1 ,
+      "microbatch_spatial_northeast_latitude":4 ,
+      "microbatch_spatial_northeast_longitude":4,
+      "minimum_temporal_range":10,
+      "maximum_temporal_range":100,
+      "properties": {
+        "foo1":"bar1",
+        "foo2":"bar2",
+        "foo3":"bar3",
+        "foo4":"bar4"
+      },
+      "min_number_properties":1,
+      "max_number_properties":4,
+      "MICROBATCH_SHARED_FILE_PATH":"/Users/pyadla/Downloads/CoFEE-master/main/cofee_fog_service/fog_user_data/stored_microbatches/",
+      "min_size_of_batch_payload":30,
+      "max_size_of_batch_payload":70
+    }
+}

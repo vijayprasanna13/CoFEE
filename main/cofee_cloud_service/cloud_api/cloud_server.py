@@ -298,6 +298,15 @@ class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
         temporal_bloom = []
         spatial_bloom = []
         domain_bloom = []
+        for b in request.temporal_bloom:
+            temporal_bloom.append(b)
+        for b in request.spatial_bloom:
+            spatial_bloom.append(b)
+        for b in request.domain_bloom:
+            domain_bloom.append(b)
+
+
+        '''
         i = 0
         for bloom in request.bloom_filters:
             for b in bloom.bit:
@@ -309,6 +318,7 @@ class cloudServicer(cloud_service_pb2_grpc.cloudServicer):
                     i += 1
                 else:
                     domain_bloom.append(b)
+        '''
 
         global_index.update_global_index((fog_endpoint, temporal_bloom, spatial_bloom, domain_bloom))
 

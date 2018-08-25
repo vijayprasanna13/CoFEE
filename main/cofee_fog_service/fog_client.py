@@ -27,5 +27,14 @@ def run():
     if(response.ack == 1):
         print("Communication was successful")
 
+def update_GI():
+    channel = grpc.insecure_channel(CLOUD_ENDPOINT)
+    stub = cloud_service_pb2_grpc.cloudStub(channel)
+    print "fog client started..."
+
+    local_index_input = cloud_service_pb2.local_index_input
+
+
 if __name__ == '__main__':
-    run()
+    #run()
+    update_GI()
