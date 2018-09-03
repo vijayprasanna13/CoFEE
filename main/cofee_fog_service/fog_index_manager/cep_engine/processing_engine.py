@@ -54,7 +54,7 @@ def compute_matching_event(microbatch_event):       # MATCHING LOGIC FOR EVENT
 
         domain_flag = loopflag
 
-    return (temp_flag,spatial_flag,domain_flag)
+    return (temp_flag,spatial_flag,domain_flag, MicroBatch_ENDPOINT)
 
 
 

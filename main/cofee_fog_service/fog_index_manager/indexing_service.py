@@ -1,7 +1,11 @@
 '''
 INDEXING SERVICE WHICH HANDLES FUNCTIONS LIKE :-
-1) UPDATE DELTA INDEX WITH GENERATED MICRO-BATCHES FROM SENSORS
-2) PERIODIC UPDATE OF LOCAL INDEX FROM DELTA INDEX
+-) Extract Microbatches
+-) UPDATE DELTA INDEX WITH GENERATED MICRO-BATCHES FROM SENSORS
+-) PERIODIC UPDATE OF LOCAL INDEX FROM DELTA INDEX
+-) PERIODIC UPDATE OF LOCAL INDEX TO GLOBAL INDEX USING FOG CLIENT
+-) HANDLING VERSION CONTROL IN LI AND DI
+-) HANDLING MICROBATCH ID AND ENDPOINT MAP
 '''
 
 import time
@@ -25,13 +29,20 @@ def populate_file_list_of_microbatches():
         if file.endswith('.pkl'):
             generated_microbatch_file_list.append(file)
 
+# deserialize microbatches and send through CEP engine
+def deserialize_and_filter_through_CEP():
+    pass
+
+
+
 # deserialize microbatches generated and stored by sensor onto directory
 def deserialize_and_update_delta_index():
-    for f in generated_microbatch_file_list:
+    for f in generated_micrrobatch_file_list:
         fileObject = open(MICROBATCH_GENERATED_PATH+str(f), 'rb')
         microbatch_object = pickle.load(fileObject)
         #microbatch_object = pickle.load(fileObject, errors='ignore')
         #print(microbatch_object.get_microbatch_prop())
+        MICROBATCH_ENDPOINT_MAP[microbatch_object.get_micro_batch_id()] =
         delta_index.add_microbatch(microbatch_object.get_micro_batch_id(), microbatch_object.get_spatial_region(),
                    microbatch_object.get_timestamp(), microbatch_object.get_microbatch_prop(), microbatch_object)
 

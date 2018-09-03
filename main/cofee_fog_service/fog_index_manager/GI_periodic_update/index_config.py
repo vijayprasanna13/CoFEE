@@ -10,3 +10,9 @@ long_min = 1.4
 long_max = 35.6
 long_delta = 4.5
 
+
+no_of_elements = 20
+false_positive_probability = 0.05
+
+
+properties = {"Foo1": "Bar1", "Foo2": "Bar2"}

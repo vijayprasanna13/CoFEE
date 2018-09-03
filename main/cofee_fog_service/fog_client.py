@@ -3,8 +3,8 @@ from concurrent import futures
 import time
 import sys
 
-sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_proto_files/cloud/')
-sys.path.append('/home/prasanth/Desktop/CoFEE/src/main/cofee_fog_service/config/')
+sys.path.append('/Users/pyadla/Downloads/CoFEE-master/main/cofee_proto_files')
+sys.path.append('/Users/pyadla/Downloads/CoFEE-master/main/cofee_fog_service/config/')
 import cloud_service_pb2
 import cloud_service_pb2_grpc
 import properties
@@ -27,14 +27,50 @@ def run():
     if(response.ack == 1):
         print("Communication was successful")
 
-def update_GI():
+def update_GI(fog_endpoint, temporal_bloomf, spatial_bloomf, domain_property_bloomf):
     channel = grpc.insecure_channel(CLOUD_ENDPOINT)
     stub = cloud_service_pb2_grpc.cloudStub(channel)
     print "fog client started..."
 
-    local_index_input = cloud_service_pb2.local_index_input
+    # construct protobuf messages for each bloom filter
+
+    temporal_bloom_filter = cloud_service_pb2.bloom_filter(size=temporal_bloomf.size)
+    # temporal_bloom_filter.size = temporal_bloomf.size
+
+    for i in temporal_bloomf.bit_array:
+        if (i == False):
+            temporal_bloom_filter.bit.append(0)
+        else:
+            temporal_bloom_filter.bit.append(1)
+
+    spatial_bloom_filter = cloud_service_pb2.bloom_filter()
+    spatial_bloom_filter.size = spatial_bloomf.size
+
+    for i in spatial_bloomf.bit_array:
+        if (i == False):
+            spatial_bloom_filter.bit.append(0)
+        else:
+            spatial_bloom_filter.bit.append(1)
+
+    domain_bloom_filter = cloud_service_pb2.bloom_filter()
+    domain_bloom_filter.size = domain_property_bloomf.size
+
+    for i in domain_property_bloomf.bit_array:
+        if (i == False):
+            domain_bloom_filter.bit.append(0)
+        else:
+            domain_bloom_filter.bit.append(1)
 
 
-if __name__ == '__main__':
+
+
+    local_index_input = cloud_service_pb2.local_index_input(fog_endpoint=fog_endpoint,temporal_bloom= temporal_bloom_filter,
+                                                            spatial_bloom= spatial_bloom_filter,  domain_bloom=domain_bloom_filter)
+
+    response = stub.update_global_index(local_index_input)
+    print("Fog finished passing it's bloom filter to Cloud....!")
+
+
+#if __name__ == '__main__':
     #run()
-    update_GI()
+    #update_GI()

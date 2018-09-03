@@ -37,7 +37,7 @@ def find_all_possible_unrollings(graph, start, end, path=[]):
         if node not in path:
             newpaths = find_all_possible_unrollings(graph, node, end, path)
             for newpath in newpaths:
-                paths.append(newpath)
+                  paths.append(newpath)
     return paths
 
 

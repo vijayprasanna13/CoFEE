@@ -358,7 +358,7 @@ class fogServicer(fog_service_pb2_grpc.fogServicer):
             if(muid == request.microbatch_data.id):
                 found = 1
 
-        delta_index_matches = query_index.query_delta_index(open_filter)
+        delta_index_matchecrs = query_index.query_delta_index(open_filter)
 
         for muid in delta_index_matches:
             if(muid == request.microbatch_data.id):
